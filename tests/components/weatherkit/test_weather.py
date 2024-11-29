@@ -15,6 +15,8 @@ from homeassistant.components.weather import (
     ATTR_WEATHER_WIND_BEARING,
     ATTR_WEATHER_WIND_GUST_SPEED,
     ATTR_WEATHER_WIND_SPEED,
+    ATTR_WEATHER_RAW_CONDITION,
+    ATTR_CONDITION_SUNNY,
     DOMAIN as WEATHER_DOMAIN,
     SERVICE_GET_FORECASTS,
     WeatherEntityFeature,
@@ -44,6 +46,7 @@ async def test_current_weather(hass: HomeAssistant) -> None:
     assert state.attributes[ATTR_WEATHER_CLOUD_COVERAGE] == 62
     assert state.attributes[ATTR_WEATHER_WIND_GUST_SPEED] == 10.53
     assert state.attributes[ATTR_WEATHER_UV_INDEX] == 1
+    assert state.attributes[ATTR_WEATHER_RAW_CONDITION] == ATTR_CONDITION_SUNNY
     assert state.attributes[ATTR_ATTRIBUTION] == ATTRIBUTION
 
 

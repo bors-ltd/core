@@ -17,6 +17,8 @@ from homeassistant.components.weather import (
     ATTR_WEATHER_WIND_BEARING,
     ATTR_WEATHER_WIND_GUST_SPEED,
     ATTR_WEATHER_WIND_SPEED,
+    ATTR_WEATHER_RAW_CONDITION,
+    ATTR_CONDITION_SUNNY,
     DOMAIN as WEATHER_DOMAIN,
     SERVICE_GET_FORECASTS,
     Forecast,
@@ -84,6 +86,7 @@ async def test_template_state_text(hass: HomeAssistant) -> None:
         ("sensor.cloud_coverage", ATTR_WEATHER_CLOUD_COVERAGE, 75),
         ("sensor.dew_point", ATTR_WEATHER_DEW_POINT, 2.2),
         ("sensor.apparent_temperature", ATTR_WEATHER_APPARENT_TEMPERATURE, 25),
+        ("sensor.raw_condition", ATTR_CONDITION_SUNNY),
     ):
         hass.states.async_set(attr, value)
         await hass.async_block_till_done()

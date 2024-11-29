@@ -17,6 +17,7 @@ from homeassistant.components.weather import (
     ATTR_WEATHER_WIND_BEARING,
     ATTR_WEATHER_WIND_GUST_SPEED,
     ATTR_WEATHER_WIND_SPEED,
+    ATTR_WEATHER_RAW_CONDITION,
     DOMAIN as WEATHER_DOMAIN,
     Forecast,
     SingleCoordinatorWeatherEntity,
@@ -142,14 +143,23 @@ class MetWeather(SingleCoordinatorWeatherEntity[MetDataUpdateCoordinator]):
         self._attr_name = name
 
     @property
-    def condition(self) -> str | None:
-        """Return the current condition."""
+    def raw_condition(self) -> str | None:
+        """Return the current condition codename."""
         condition = self.coordinator.data.current_weather_data.get("condition")
         if condition is None:
             return None
 
         if condition == ATTR_CONDITION_SUNNY and not sun.is_up(self.hass):
             condition = ATTR_CONDITION_CLEAR_NIGHT
+
+        return condition
+
+    @property
+    def condition(self) -> str | None:
+        """Return the current condition."""
+        condition = self.raw_condition
+        if condition is None:
+            return None
 
         return format_condition(condition)
 

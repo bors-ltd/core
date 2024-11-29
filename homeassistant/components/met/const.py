@@ -33,6 +33,7 @@ from homeassistant.components.weather import (
     ATTR_WEATHER_WIND_BEARING,
     ATTR_WEATHER_WIND_GUST_SPEED,
     ATTR_WEATHER_WIND_SPEED,
+    ATTR_WEATHER_RAW_CONDITION,
     DOMAIN as WEATHER_DOMAIN,
 )
 
@@ -206,4 +207,5 @@ ATTR_MAP = {
     ATTR_WEATHER_CLOUD_COVERAGE: "cloudiness",
     ATTR_WEATHER_DEW_POINT: "dew_point",
     ATTR_WEATHER_UV_INDEX: "uv_index",
+    ATTR_WEATHER_RAW_CONDITION: "raw_condition",
 }

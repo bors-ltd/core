@@ -52,6 +52,7 @@ ATTR_WEATHER_WIND_SPEED_UNIT = "wind_speed_unit"
 ATTR_WEATHER_PRECIPITATION_UNIT = "precipitation_unit"
 ATTR_WEATHER_CLOUD_COVERAGE = "cloud_coverage"
 ATTR_WEATHER_UV_INDEX = "uv_index"
+ATTR_WEATHER_RAW_CONDITION = "raw_condition"
 
 DOMAIN: Final = "weather"
 DATA_COMPONENT: HassKey[EntityComponent[WeatherEntity]] = HassKey(DOMAIN)

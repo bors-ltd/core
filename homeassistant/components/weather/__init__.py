@@ -63,6 +63,7 @@ from .const import (  # noqa: F401
     ATTR_WEATHER_WIND_GUST_SPEED,
     ATTR_WEATHER_WIND_SPEED,
     ATTR_WEATHER_WIND_SPEED_UNIT,
+    ATTR_WEATHER_RAW_CONDITION,
     DATA_COMPONENT,
     DOMAIN,
     INTENT_GET_WEATHER,
@@ -676,6 +677,8 @@ class WeatherEntity(Entity, PostInit, cached_properties=CACHED_PROPERTIES_WITH_A
 
         data[ATTR_WEATHER_VISIBILITY_UNIT] = self._visibility_unit
         data[ATTR_WEATHER_PRECIPITATION_UNIT] = self._precipitation_unit
+
+        data[ATTR_WEATHER_RAW_CONDITION] = self.raw_condition
 
         return data
 
