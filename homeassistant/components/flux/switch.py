@@ -62,6 +62,7 @@ CONF_INTERVAL = "interval"
 MODE_XY = "xy"
 MODE_MIRED = "mired"
 MODE_RGB = "rgb"
+MODE_KELVIN = "kelvin"
 DEFAULT_MODE = MODE_XY
 
 PLATFORM_SCHEMA = vol.Schema(

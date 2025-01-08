@@ -1168,7 +1168,7 @@ async def test_flux_with_temp(
     hass: HomeAssistant,
     mock_light_entities: list[MockLight],
 ) -> None:
-    """Test the flux switch's mode mired."""
+    """Test the flux switch's mode kelvin."""
     setup_test_component_platform(hass, light.DOMAIN, mock_light_entities)
 
     assert await async_setup_component(
@@ -1209,7 +1209,7 @@ async def test_flux_with_temp(
                     "platform": "flux",
                     "name": "flux",
                     "lights": [ent1.entity_id],
-                    "mode": "mired",
+                    "mode": "kelvin",
                 }
             },
         )
