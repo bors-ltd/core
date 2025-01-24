@@ -93,6 +93,8 @@ class LanguageIntents:
     intent_responses: dict[str, Any]
     error_responses: dict[str, Any]
     language_variant: str | None
+    include_templates: dict[str, str] | None
+    import_templates: dict[str, str] | None
 
 
 @dataclass(slots=True)
@@ -507,7 +509,14 @@ class DefaultAgent(ConversationEntity):
                 result.intent.name, {}
             ).get(response_key)
             if response_template_str:
-                response_template = template.Template(response_template_str, self.hass)
+                include_templates = lang_intents.include_templates
+                import_templates = lang_intents.import_templates
+                response_template = template.Template(
+                    response_template_str,
+                    self.hass,
+                    include_templates,
+                    import_templates,
+                )
                 speech = await self._build_speech(
                     language, response_template, intent_response, result
                 )
@@ -1024,6 +1033,10 @@ class DefaultAgent(ConversationEntity):
         responses_dict = intents_dict.get("responses", {})
         intent_responses = responses_dict.get("intents", {})
         error_responses = responses_dict.get("errors", {})
+        # Load reusable templates to format responses
+        templates_dict = intents_dict.get("templates", {})
+        include_templates = templates_dict.get("includes")
+        import_templates = templates_dict.get("imports")
 
         return LanguageIntents(
             intents,
@@ -1031,6 +1044,8 @@ class DefaultAgent(ConversationEntity):
             intent_responses,
             error_responses,
             language_variant,
+            include_templates,
+            import_templates,
         )
 
     @core.callback

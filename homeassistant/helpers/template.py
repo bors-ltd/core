@@ -516,11 +516,19 @@ class Template:
         "_renders",
         "_strict",
         "hass",
+        "import_templates",
+        "include_templates",
         "is_static",
         "template",
     )
 
-    def __init__(self, template: str, hass: HomeAssistant | None = None) -> None:
+    def __init__(
+        self,
+        template: str,
+        hass: HomeAssistant | None = None,
+        include_templates: dict[str, str] | None = None,
+        import_templates: dict[str, str] | None = None,
+    ) -> None:
         """Instantiate a template.
 
         Note: A valid hass instance should always be passed in. The hass parameter
@@ -540,6 +548,8 @@ class Template:
             )
 
         self.template: str = template.strip()
+        self.include_templates = include_templates
+        self.import_templates = import_templates
         self._compiled_code: CodeType | None = None
         self._compiled: jinja2.Template | None = None
         self.hass = hass
@@ -568,7 +578,12 @@ class Template:
             wanted_env = _ENVIRONMENT
         if (ret := self.hass.data.get(wanted_env)) is None:
             ret = self.hass.data[wanted_env] = TemplateEnvironment(
-                self.hass, self._limited, self._strict, self._log_fn
+                self.hass,
+                self._limited,
+                self._strict,
+                self._log_fn,
+                self.include_templates,
+                self.import_templates,
             )
         return ret
 
@@ -2871,6 +2886,8 @@ class TemplateEnvironment(ImmutableSandboxedEnvironment):
         limited: bool | None = False,
         strict: bool | None = False,
         log_fn: Callable[[int, str], None] | None = None,
+        include_templates: dict[str, str] | None = None,
+        import_templates: dict[str, str] | None = None,
     ) -> None:
         """Initialise template environment."""
         super().__init__(undefined=make_logging_undefined(strict, log_fn))
@@ -2978,7 +2995,14 @@ class TemplateEnvironment(ImmutableSandboxedEnvironment):
             return
 
         # This environment has access to hass, attach its loader to enable imports.
-        self.loader = _get_hass_loader(hass)
+        loaders: list[jinja2.BaseLoader] = [
+            _get_hass_loader(hass),
+        ]
+        if include_templates:
+            loaders.insert(0, jinja2.DictLoader(include_templates))
+        if import_templates:
+            loaders.insert(0, jinja2.DictLoader(import_templates))
+        self.loader = jinja2.ChoiceLoader(loaders)
 
         # We mark these as a context functions to ensure they get
         # evaluated fresh with every execution, rather than executed

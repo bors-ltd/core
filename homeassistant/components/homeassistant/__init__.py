@@ -338,7 +338,7 @@ async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:  # noqa:
         Calls all reload services on all active domains, which triggers the
         reload of YAML configurations for the domain that support it.
 
-        Additionally, it also calls the `homeasssitant.reload_core_config`
+        Additionally, it also calls the `homeassistant.reload_core_config`
         service, as that reloads the core YAML configuration, the
         `frontend.reload_themes` service that reloads the themes, and the
         `homeassistant.reload_custom_templates` service that reloads any custom
