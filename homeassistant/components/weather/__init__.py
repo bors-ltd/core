@@ -52,10 +52,12 @@ from homeassistant.helpers.update_coordinator import (
 )
 from homeassistant.util.dt import utcnow
 from homeassistant.util.json import JsonValueType
+from homeassistant.util.unit_conversion import SpeedConverter
 from homeassistant.util.unit_system import US_CUSTOMARY_SYSTEM
 
 from .const import (  # noqa: F401
     ATTR_WEATHER_APPARENT_TEMPERATURE,
+    ATTR_WEATHER_BEAUFORT_SCALE,
     ATTR_WEATHER_CLOUD_COVERAGE,
     ATTR_WEATHER_DEW_POINT,
     ATTR_WEATHER_HUMIDITY,
@@ -320,6 +322,9 @@ class WeatherEntity(Entity, PostInit, cached_properties=CACHED_PROPERTIES_WITH_A
     def __post_init__(self, *args: Any, **kwargs: Any) -> None:
         """Finish initializing."""
         self._forecast_listeners = {"daily": [], "hourly": [], "twice_daily": []}
+        self._beaufort_converter = SpeedConverter.converter_factory_allow_none(
+            self.native_wind_speed_unit, UnitOfSpeed.BEAUFORT
+        )
 
     async def async_internal_added_to_hass(self) -> None:
         """Call when the weather entity is added to hass."""
@@ -450,6 +455,12 @@ class WeatherEntity(Entity, PostInit, cached_properties=CACHED_PROPERTIES_WITH_A
             return weather_option_wind_speed_unit
 
         return self._default_wind_speed_unit
+
+    @cached_property
+    def beaufort_scale(self) -> int | None:
+        """Return the wind speed expressed on the Beaufort scale (1 to 12)."""
+        beaufort_f = self._beaufort_converter(self.native_wind_speed)
+        return int(beaufort_f) if beaufort_f else None
 
     @cached_property
     def wind_bearing(self) -> float | str | None:
@@ -666,6 +677,7 @@ class WeatherEntity(Entity, PostInit, cached_properties=CACHED_PROPERTIES_WITH_A
                 )
             except (TypeError, ValueError):
                 data[ATTR_WEATHER_WIND_SPEED] = wind_speed
+            data[ATTR_WEATHER_BEAUFORT_SCALE] = self.beaufort_scale
 
         data[ATTR_WEATHER_WIND_SPEED_UNIT] = self._wind_speed_unit
 
